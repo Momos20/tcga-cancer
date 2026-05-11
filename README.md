@@ -1,6 +1,6 @@
-# Proyecto Integrador 2026-1 — TCGA Cancer ML + Aplicación Flask
+# TCGA Cancer ML
 
-Repositorio unificado para la entrega del proyecto integrador. Incluye dos componentes:
+Incluye dos componentes:
 
 1. **Pipeline reproducible en Databricks**
    - ingesta
@@ -164,42 +164,4 @@ Dentro de `app_flask/databricks/` ya existen utilidades para exportar resultados
 
 ---
 
-## 6. Qué archivos sí entregar al profesor
 
-### En GitHub
-- notebooks `.ipynb`
-- scripts `.py` y `.sql`
-- app Flask
-- README
-- estructura del repositorio
-- documentación
-- capturas / evidencias si aplica
-
-### En Google Drive o Databricks
-- datos pesados descargados desde GDC
-- tablas persistidas
-- artefactos voluminosos del modelo
-- exportaciones grandes que no convenga versionar
-
----
-
-## 7. Recomendación para la entrega
-
-Use este repositorio como carpeta principal y agregue además:
-
-- el PDF final del informe
-- las figuras del documento
-- un folder `evidences/` con pantallazos de Databricks
-- un enlace en el README al Drive o ubicación de los datos pesados
-
----
-
-## 8. Nota importante
-
-Para mantener el repositorio limpio, se excluyeron del paquete:
-- `.venv/`
-- `__pycache__/`
-- archivos `.pyc`
-- carpetas temporales de macOS (`__MACOSX`, `.DS_Store`)
-
-Esto mejora la reproducibilidad y evita subir basura técnica a GitHub.
