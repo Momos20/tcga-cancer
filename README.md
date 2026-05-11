@@ -1,22 +1,25 @@
 # TCGA Cancer ML
 
-Incluye dos componentes:
+## Descripción general
 
-1. **Pipeline reproducible en Databricks**
-   - ingesta
-   - preparación
-   - EDA
-   - modelado SparkML
-   - capa de aplicación sobre resultados refined
+Este repositorio integra dos componentes principales del proyecto:
 
-2. **Aplicación Flask**
-   - visualización de resultados exportados desde `refined`
-   - consulta de métricas, clases, expresión global y genes
-   - flujo de inferencia con nuevas muestras
+1. **Pipeline batch reproducible en Databricks**
+   - Ingesta de datos desde el **Genomic Data Commons (GDC)**.
+   - Organización del datalake en las zonas **raw**, **trusted**, **refined** y **models**.
+   - Preparación de datos con **PySpark**.
+   - Análisis exploratorio de datos con **SparkSQL**.
+   - Entrenamiento y evaluación de modelos de clasificación multiclase con **SparkML**.
+   - Persistencia de tablas analíticas, métricas, predicciones y modelo final.
+
+2. **Aplicación web en Flask**
+   - Visualización de resultados analíticos.
+   - Exploración de métricas y salidas del modelo.
+   - Capa de consumo orientada a mostrar el valor del pipeline de datos de forma más accesible.
 
 ---
 
-## 1. Estructura del repositorio
+## Estructura del repositorio
 
 ```text
 tcga_cancer_repo/
@@ -52,12 +55,34 @@ tcga_cancer_repo/
 
 ---
 
-## 2. Qué contiene cada parte
+## Flujo batch implementado en Databricks
 
-### `databricks/`
-Contiene el pipeline principal del proyecto, listo para reproducirse por etapas dentro de Databricks.
+El pipeline del proyecto sigue una lógica secuencial y reproducible:
 
-#### Orden de ejecución recomendado
+1. **Configuración del entorno y definición de rutas**
+2. **Ingesta de datos desde GDC hacia raw**
+3. **Preparación y limpieza en trusted**
+4. **Catalogación de tablas en Unity Catalog**
+5. **EDA con SparkSQL y persistencia en refined**
+6. **Modelado multiclase con SparkML**
+7. **Persistencia del mejor modelo en models**
+8. **Consumo de resultados desde aplicación o capa visual**
+
+### Zonas del datalake
+
+| Zona | Propósito |
+|---|---|
+| `raw` | Archivos originales descargados desde GDC y metadatos de ingesta |
+| `trusted` | Datos limpios, filtrados, validados y listos para análisis/modelado |
+| `refined` | Tablas de EDA, métricas, predicciones, reportes y visualizaciones |
+| `models` | Artefactos persistidos del mejor modelo SparkML |
+
+---
+
+## Orden de ejecución recomendado en Databricks
+
+Los notebooks deben ejecutarse en este orden:
+
 1. `00_configuracion.ipynb`
 2. `01_descarga_ingesta_gdc_raw.ipynb`
 3. `02_preparacion_trusted.ipynb`
@@ -65,103 +90,80 @@ Contiene el pipeline principal del proyecto, listo para reproducirse por etapas 
 5. `04_modelo_sparkml_multiclase.ipynb`
 6. `05_aplicacion_visualizacion_refined.ipynb`
 
-### `app_flask/`
-Contiene la aplicación web construida adicionalmente para exponer parte de los resultados del proyecto. Esta app consume archivos exportados desde la zona `refined` del datalake.
+Este orden garantiza que cada etapa consuma las salidas generadas por la etapa anterior.
 
 ---
 
-## 3. Reproducibilidad del pipeline en Databricks
+## Descripción breve de cada notebook
 
-### Requisitos
-- Workspace de Databricks con acceso a Volumes
-- Unity Catalog habilitado
-- acceso a internet para consultar/descargar desde GDC
-- permisos para crear tablas en `workspace.default`
+### `00_configuracion.ipynb`
+Define rutas del proyecto, estructura del datalake, clases oficiales y variables de configuración general.
 
-### Flujo batch implementado
-- **raw**: archivos originales y metadatos de ingesta
-- **trusted**: datos limpios, filtrados y validados
-- **refined**: salidas EDA, métricas, predicciones y visualizaciones
-- **models**: artefactos del mejor modelo SparkML
+### `01_descarga_ingesta_gdc_raw.ipynb`
+Consulta el API del GDC, construye metadatos, filtra los proyectos seleccionados y descarga archivos RNA-Seq a la zona `raw`.
 
-### Tablas principales generadas
-#### Raw
-- `workspace.default.raw_tcga_metadatos_completo`
-- `workspace.default.raw_tcga_metadatos_oficial_18_clases`
-- `workspace.default.raw_tcga_manifest_descargas`
+### `02_preparacion_trusted.ipynb`
+Realiza la limpieza, transformación y validación de los datos con PySpark, y persiste tablas confiables en `trusted`.
 
-#### Trusted
-- `workspace.default.trusted_tcga_rnaseq_long_18_clases`
-- `workspace.default.trusted_tcga_samples_18_clases`
-- `workspace.default.trusted_tcga_gene_dictionary`
+### `03_eda_sparksql.ipynb`
+Ejecuta el análisis exploratorio sobre tablas catalogadas, genera tablas analíticas y visualizaciones persistidas en `refined`.
 
-#### Refined
-- `workspace.default.refined_eda_resumen_general`
-- `workspace.default.refined_eda_conteo_clases`
-- `workspace.default.refined_eda_desbalance_clases`
-- `workspace.default.refined_eda_tipos_muestra`
-- `workspace.default.refined_eda_calidad_datos`
-- `workspace.default.refined_eda_genes_detectados_muestra`
-- `workspace.default.refined_eda_expresion_global`
-- `workspace.default.refined_eda_top_genes_por_clase`
-- `workspace.default.refined_eda_genes_mas_variables`
-- `workspace.default.refined_eda_muestras_por_paciente`
-- `workspace.default.refined_ml_matriz_100_genes`
-- `workspace.default.refined_metricas_modelos_sparkml`
-- `workspace.default.refined_reporte_clasificacion_por_clase`
-- `workspace.default.refined_predicciones_test_mejor_modelo`
-- `workspace.default.refined_matriz_confusion_mejor_modelo`
+### `04_modelo_sparkml_multiclase.ipynb`
+Construye la matriz de modelado, divide entrenamiento/validación/prueba, entrena modelos SparkML, compara métricas y guarda el mejor modelo.
+
+### `05_aplicacion_visualizacion_refined.ipynb`
+Consume resultados desde `refined` para construir una capa mínima de aplicación y visualización.
 
 ---
 
-## 4. Cómo ejecutar la aplicación Flask
+## Aplicación Flask
 
-Entre a la carpeta:
+Además del pipeline reproducible en Databricks, el proyecto incluye una **aplicación web en Flask** como componente adicional de exposición de resultados.
 
-```bash
-cd app_flask
-```
+### Propósito de la app
+- presentar resultados del proyecto de forma más amigable,
+- explorar salidas analíticas y métricas,
+- complementar la parte técnica del pipeline con una interfaz de consumo.
 
-Cree el entorno virtual e instale dependencias:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-Copie variables de entorno:
-
-```bash
-cp .env.example .env
-```
-
-Ejecute:
-
-```bash
-python app.py
-```
-
-Abrir en navegador:
-
-```text
-http://127.0.0.1:5000
-```
+### Rol dentro del proyecto
+La app no reemplaza el pipeline batch, sino que funciona como **capa de aplicación** construida sobre los resultados generados por Databricks.
 
 ---
 
-## 5. Relación entre Databricks y la aplicación
+## Datos del proyecto
 
-La aplicación Flask no reemplaza el pipeline batch.  
-La lógica correcta del repositorio es:
+Los datos provienen del **Genomic Data Commons (GDC)**, específicamente de archivos abiertos asociados a proyectos **TCGA**, filtrados con los siguientes criterios:
 
-1. ejecutar el pipeline en Databricks;
-2. generar tablas y salidas en `refined`;
-3. exportar los CSV necesarios para la app;
-4. ejecutar la app localmente o desplegarla.
+- `data_category = 'Transcriptome Profiling'`
+- `data_type = 'Gene Expression Quantification'`
+- `workflow_type = 'STAR - Counts'`
 
-Dentro de `app_flask/databricks/` ya existen utilidades para exportar resultados y registrar tablas.
+El pipeline trabaja con una selección oficial de **18 clases de cáncer** y filtra posteriormente las muestras de tipo **Primary Tumor**.
 
 ---
+
+## Tecnologías utilizadas
+
+- **Databricks**
+- **Databricks Volumes**
+- **Unity Catalog**
+- **PySpark**
+- **SparkSQL**
+- **SparkML**
+- **Python**
+- **Flask**
+- **Pandas**
+- **Matplotlib**
+
+---
+
+## Resultados esperados del repositorio
+
+Este repositorio permite evidenciar:
+
+- una arquitectura batch implementada de extremo a extremo,
+- un pipeline reproducible para ingesta, preparación, EDA y modelado,
+- persistencia de resultados en distintas zonas del datalake,
+- y una aplicación complementaria para consumo de resultados.
 
 
