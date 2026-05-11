@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>{{ title or "Cancer RNA-Seq Analytics" }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">ɣ</div>
+            <div>
+                <h1>RNA-Seq Cancer</h1>
+                <p>Analytics App</p>
+            </div>
+        </div>
+
+        <nav class="side-nav">
+            <span class="nav-section">Inicio</span>
+            <a href="{{ url_for('dashboard') }}">Home</a>
+
+            <span class="nav-section">Datos</span>
+            <a href="{{ url_for('calidad') }}">Calidad de los datos</a>
+            <a href="{{ url_for('clases') }}">Clases</a>
+            <a href="{{ url_for('expresion') }}">Expresión global</a>
+            <a href="{{ url_for('genes') }}">Top genes</a>
+
+            <span class="nav-section">Modelo</span>
+            <a href="{{ url_for('modelos') }}">Modelos</a>
+            <a href="{{ url_for('visualizaciones') }}">Visualizaciones por métricas</a>
+            <a href="{{ url_for('nueva_prediccion') }}">Nueva predicción</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">Clasificación multiclase de tipos de cáncer</p>
+                <h2>{% block page_title %}Home{% endblock %}</h2>
+            </div>
+        </header>
+
+        <section class="content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </section>
+    </main>
+</div>
+</body>
+</html>

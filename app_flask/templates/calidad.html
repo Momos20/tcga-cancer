@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "components_table.html" import render_table %}
+{% block page_title %}Calidad de los datos{% endblock %}
+{% block content %}
+{% if resumen_columns and resumen_rows %}
+<section class="panel">
+    <div class="panel-header">
+        <h3>Resumen general</h3>
+        <p>Síntesis de características generales del conjunto de datos.</p>
+    </div>
+    {{ render_table(resumen_columns, resumen_rows) }}
+</section>
+{% endif %}
+
+<section class="panel">
+    <div class="panel-header">
+        <h3>Detalle de calidad</h3>
+        <p>Exploración de valores faltantes, tipos de variables y posibles problemas de estructura.</p>
+    </div>
+
+    {% if error %}
+        <p class="empty">{{ error }}</p>
+    {% else %}
+        {% if grafica %}
+            <div class="chart">{{ grafica|safe }}</div>
+        {% endif %}
+        {{ render_table(columns, rows) }}
+    {% endif %}
+</section>
+{% endblock %}

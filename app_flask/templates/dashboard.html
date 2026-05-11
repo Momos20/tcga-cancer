@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block page_title %}Home{% endblock %}
+{% block content %}
+
+<div class="hero">
+    <div>
+        <span class="tag">TCGA · RNA-Seq · SparkML</span>
+        <h3>Resultados del flujo analítico</h3>
+        <p>
+            Consulta los indicadores principales, métricas de modelamiento,
+            visualizaciones y carga de nuevas muestras desde un solo lugar.
+        </p>
+    </div>
+    <div class="hero-box">
+        <span>Modo de datos</span>
+        <strong>{{ data_mode }}</strong>
+    </div>
+</div>
+
+<div class="kpi-grid">
+    {% for card in cards %}
+    <article class="kpi-card">
+        <p>{{ card.label }}</p>
+        <strong>{{ card.value }}</strong>
+        <span>{{ card.hint }}</span>
+    </article>
+    {% endfor %}
+</div>
+
+<div class="grid-2">
+    <section class="panel">
+        <div class="panel-header">
+            <h3>Distribución de clases</h3>
+            <p>Conteo de muestras por tipo de cáncer.</p>
+        </div>
+        {% if grafica_clases %}
+            {{ grafica_clases|safe }}
+        {% else %}
+            <p class="empty">No hay datos suficientes para graficar la distribución.</p>
+        {% endif %}
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <h3>Comparación de modelos</h3>
+            <p>Desempeño comparado de los modelos evaluados.</p>
+        </div>
+        {% if grafica_modelos %}
+            {{ grafica_modelos|safe }}
+        {% else %}
+            <p class="empty">No hay datos suficientes para graficar modelos.</p>
+        {% endif %}
+    </section>
+</div>
+
+<section class="panel">
+    <div class="panel-header">
+        <h3>Estado de fuentes</h3>
+        <p>Verifica qué archivos CSV o tablas están disponibles para la aplicación.</p>
+    </div>
+    <div class="table-card">
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Clave</th>
+                        <th>Tabla / CSV</th>
+                        <th>Modo</th>
+                        <th>Disponible</th>
+                        <th>Filas</th>
+                        <th>Columnas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in status %}
+                    <tr>
+                        <td>{{ item.clave }}</td>
+                        <td>{{ item.tabla }}</td>
+                        <td>{{ item.modo }}</td>
+                        <td>
+                            {% if item.existe %}
+                                <span class="status-ok">Sí</span>
+                            {% else %}
+                                <span class="status-bad">No</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.filas }}</td>
+                        <td>{{ item.columnas }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

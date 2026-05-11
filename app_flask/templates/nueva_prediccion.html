@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block page_title %}Nueva predicción{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header">
+        <h3>Carga experimental de nueva muestra</h3>
+        <p>
+            Cargue un archivo CSV en formato largo. Esta app valida la estructura y deja el archivo preparado
+            para inferencia en Databricks con el modelo SparkML.
+        </p>
+    </div>
+
+    <div class="upload-layout">
+        <form method="post" enctype="multipart/form-data" class="upload-box">
+            <div class="upload-icon">↑</div>
+            <h4>Subir archivo CSV</h4>
+            <p>Columnas requeridas: <code>sample_id</code>, <code>patient_id</code>, <code>gene_id_base</code>, <code>log2_tpm</code>.</p>
+            <input type="file" name="archivo" accept=".csv">
+            <button type="submit">Validar muestra</button>
+        </form>
+
+        <div class="info-box">
+            <h4>Formato esperado</h4>
+            <pre>sample_id,patient_id,gene_id_base,log2_tpm
+MUESTRA_001,PACIENTE_001,ENSG00000141510,7.82
+MUESTRA_001,PACIENTE_001,ENSG00000171862,4.91</pre>
+            <p>
+                La predicción real debe ejecutarse en Databricks para conservar el mismo preprocesamiento del entrenamiento.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

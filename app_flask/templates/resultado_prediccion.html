@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% from "components_table.html" import render_table %}
+{% block page_title %}Resultado de validación{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header">
+        <h3>Validación de nueva muestra</h3>
+        <p>Archivo guardado: <span class="small">{{ archivo }}</span></p>
+    </div>
+
+    {% if validacion.valido %}
+        <div class="alert success">El archivo tiene la estructura mínima requerida.</div>
+    {% else %}
+        <div class="alert error">El archivo no cumple la estructura requerida.</div>
+    {% endif %}
+
+    <div class="kpi-grid">
+        <article class="kpi-card"><p>Filas</p><strong>{{ validacion.filas }}</strong><span>Registros cargados</span></article>
+        <article class="kpi-card"><p>Muestras</p><strong>{{ validacion.muestras }}</strong><span>sample_id únicos</span></article>
+        <article class="kpi-card"><p>Pacientes</p><strong>{{ validacion.pacientes }}</strong><span>patient_id únicos</span></article>
+        <article class="kpi-card"><p>Genes</p><strong>{{ validacion.genes }}</strong><span>gene_id_base únicos</span></article>
+    </div>
+
+    {% if validacion.errores %}
+    <div class="message-card error-soft">
+        <h4>Errores</h4>
+        <ul>
+            {% for error in validacion.errores %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if validacion.advertencias %}
+    <div class="message-card warning-soft">
+        <h4>Advertencias</h4>
+        <ul>
+            {% for adv in validacion.advertencias %}
+            <li>{{ adv }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <h3>Vista previa del archivo</h3>
+    {{ render_table(columns, rows) }}
+
+    <div class="next-step">
+        <h4>Siguiente paso</h4>
+        <p>
+            Cargar este archivo a una ruta accesible por Databricks y ejecutar el notebook de inferencia
+            <code>databricks/05_inferencia_nuevas_muestras.py</code>.
+        </p>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "components_table.html" import render_table %}
+{% block page_title %}Top genes por clase{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header">
+        <p>Genes más relevantes o variables por tipo de cáncer.</p>
+    </div>
+
+    {% if error %}
+        <p class="empty">{{ error }}</p>
+    {% else %}
+        {% if clases %}
+        <form method="get" class="filter-bar">
+            <label>
+                Filtrar por clase
+                <select name="clase">
+                    <option value="">Todas</option>
+                    {% for c in clases %}
+                    <option value="{{ c }}" {% if c == selected_class %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button type="submit">Aplicar</button>
+        </form>
+        {% endif %}
+
+        {% if grafica %}
+            <div class="chart">{{ grafica|safe }}</div>
+        {% endif %}
+
+        {{ render_table(columns, rows) }}
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "components_table.html" import render_table %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+<section class="panel">
+    {% if subtitle %}
+    <div class="panel-header">
+        <p>{{ subtitle }}</p>
+    </div>
+    {% endif %}
+
+    {% if error %}
+        <p class="empty">{{ error }}</p>
+    {% else %}
+        {{ render_table(columns, rows) }}
+    {% endif %}
+</section>
+{% endblock %}

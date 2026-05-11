@@ -1,0 +1,19 @@
+cancer_type,cancer_name,n_muestras,n_pacientes
+BRCA,Breast invasive carcinoma,1106,1095
+UCEC,Uterine corpus endometrial carcinoma,549,545
+KIRC,Kidney renal clear cell carcinoma,537,533
+LUAD,Lung adenocarcinoma,529,517
+HNSC,Head and neck squamous cell carcinoma,520,520
+LGG,Brain lower grade glioma,516,516
+THCA,Thyroid carcinoma,505,505
+LUSC,Lung squamous cell carcinoma,501,501
+PRAD,Prostate adenocarcinoma,501,497
+COAD,Colon adenocarcinoma,471,458
+OV,Ovarian serous cystadenocarcinoma,426,426
+STAD,Stomach adenocarcinoma,412,412
+BLCA,Bladder urothelial carcinoma,409,406
+LIHC,Liver hepatocellular carcinoma,371,371
+CESC,Cervical squamous cell carcinoma and endocervical adenocarcinoma,304,304
+KIRP,Kidney renal papillary cell carcinoma,290,290
+GBM,Glioblastoma multiforme,285,284
+SKCM,Skin cutaneous melanoma,103,103

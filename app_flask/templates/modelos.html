@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "components_table.html" import render_table %}
+{% block page_title %}Comparación de modelos{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header">
+        <h3>Métricas de modelos SparkML</h3>
+        <p>Comparación de desempeño entre los modelos entrenados sobre la matriz de expresión génica.</p>
+    </div>
+
+    {% if error %}
+        <p class="empty">{{ error }}</p>
+    {% else %}
+        <div class="grid-2">
+            <div class="chart-card">
+                {% if grafica_f1 %}
+                    {{ grafica_f1|safe }}
+                {% else %}
+                    <p class="empty">No se encontró columna F1 macro para graficar.</p>
+                {% endif %}
+            </div>
+            <div class="chart-card">
+                {% if grafica_acc %}
+                    {{ grafica_acc|safe }}
+                {% else %}
+                    <p class="empty">No se encontró columna accuracy para graficar.</p>
+                {% endif %}
+            </div>
+        </div>
+        {{ render_table(columns, rows) }}
+    {% endif %}
+</section>
+{% endblock %}

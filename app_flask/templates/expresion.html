@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "components_table.html" import render_table %}
+{% block page_title %}Expresión global{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header">
+        <p>Resumen de comportamiento de expresión génica.</p>
+    </div>
+
+    {% if error %}
+        <p class="empty">{{ error }}</p>
+    {% else %}
+        {% if grafica %}
+            <div class="chart">{{ grafica|safe }}</div>
+        {% endif %}
+        {{ render_table(columns, rows) }}
+    {% endif %}
+</section>
+{% endblock %}

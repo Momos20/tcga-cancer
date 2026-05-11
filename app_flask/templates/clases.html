@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "components_table.html" import render_table %}
+{% block page_title %}Distribución de clases{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-header">
+        <p>Conteo de muestras por tipo de cáncer usado para revisar balance de clases.</p>
+    </div>
+
+    {% if error %}
+        <p class="empty">{{ error }}</p>
+    {% else %}
+        {% if grafica %}
+            <div class="chart">{{ grafica|safe }}</div>
+        {% endif %}
+        {{ render_table(columns, rows) }}
+    {% endif %}
+</section>
+{% endblock %}
